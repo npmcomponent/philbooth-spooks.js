@@ -41,14 +41,14 @@ runTask = (operation, message) ->
 minify = ->
   runCommand commands.minify
 
+compile = ->
+  runCommand commands.compile
+
 test = ->
   runCommand commands.test
 
 lint = ->
   runCommand commands.lint
-
-compile = ->
-  runCommand commands.compile
 
 prepare = ->
   runCommand commands.prepare
@@ -67,9 +67,9 @@ after = () ->
 
 commands =
   minify: './node_modules/.bin/uglifyjs --no-copyright --lift-vars --output ./build/mock.min.js ./build/mock.js'
+  compile: './node_modules/.bin/coffee -c -o ./build ./src/mock.coffee'
   test: './node_modules/.bin/mocha --compilers coffee:coffee-script --ui tdd --reporter spec --colors --slow 50 ./test/mock.coffee'
   lint: './node_modules/.bin/coffeelint -f config/coffeelint.json ./src/mock.coffee'
-  compile: './node_modules/.bin/coffee -c -o ./build ./src/mock.coffee'
   prepare: 'npm install'
 
 originalNodePath = process.env.NODE_PATH
