@@ -1,5 +1,27 @@
 'use strict'
 
+mockObject = (options) ->
+  archetype = options.archetype
+  mock = options.mock || {}
+  log = options.log
+  result = options.result
+
+  unless archetype? or typeof archetype is 'function'
+    throw new Error 'Invalid archetype'
+
+  unless log?
+    throw new Error 'Invalid log'
+
+  for own name, property of archetype
+    if typeof property is 'function'
+      mock[name] = mockFunction {
+        name
+        log
+        result
+      }
+
+  mock
+
 mockFunction = (options) ->
   name = options.name
   chain = options.chain
@@ -32,5 +54,6 @@ logFunctionCall = (name, log, args) ->
   log.args[name].push args
 
 module.exports =
+  obj: mockObject
   fn: mockFunction
 

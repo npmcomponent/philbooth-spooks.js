@@ -13,13 +13,14 @@ suite 'no setup:', ->
     assert.isObject require(module)
 
 suite 'require:', ->
-  mock = undefined
+  mock = archetype = undefined
 
   setup ->
     mock = require module
+    archetype = {}
 
   teardown ->
-    mock = undefined
+    mock = archetype = undefined
 
   test 'fn function is defined', ->
     assert.isFunction mock.fn
@@ -55,6 +56,44 @@ suite 'require:', ->
   test 'calling fn with valid arguments returns function', ->
     assert.isFunction mock.fn(
       name: 'bar'
+      log: {}
+    )
+
+  test 'obj function is defined', ->
+    assert.isFunction mock.obj
+
+  test 'calling obj with an empty object throws', ->
+    assert.throws ->
+      mock.obj archetype, {}
+
+  test 'calling obj with valid arguments does not throw', ->
+    assert.doesNotThrow ->
+      mock.obj
+        archetype: {}
+        log: {}
+
+  test 'calling obj with null archetype argument throws', ->
+    assert.throws ->
+      mock.obj
+        archetype: null
+        log: {}
+
+  test 'calling obj with null log argument throws', ->
+    assert.throws ->
+      mock.obj
+        archetype: {}
+        log: null
+
+  test 'calling obj with valid arguments returns object', ->
+    assert.isObject mock.obj(
+      archetype: {}
+      log: {}
+    )
+
+  test 'calling obj with function mock argument returns function', ->
+    assert.isFunction mock.obj(
+      mock: ->
+      archetype: {}
       log: {}
     )
 
@@ -301,4 +340,7 @@ suite 'require:', ->
 
       test 'calling mocked function returns mocked function', ->
         assert.strictEqual fn(), fn
+
+  suite 'call obj with name and log', ->
+    # TODO: Write these tests
 
