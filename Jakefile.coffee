@@ -66,10 +66,10 @@ after = () ->
   complete()
 
 commands =
-  minify: './node_modules/.bin/uglifyjs --no-copyright --lift-vars --output ./build/mock.min.js ./build/mock.js'
-  compile: './node_modules/.bin/coffee -c -o ./build ./src/mock.coffee'
-  test: './node_modules/.bin/mocha --compilers coffee:coffee-script --ui tdd --reporter spec --colors --slow 50 ./test/mock.coffee'
-  lint: './node_modules/.bin/coffeelint -f config/coffeelint.json ./src/mock.coffee'
+  minify: './node_modules/.bin/uglifyjs --no-copyright --lift-vars --output ./build/spooks.min.js ./build/spooks.js'
+  compile: './node_modules/.bin/coffee -c -o ./build ./src/spooks.coffee'
+  test: './node_modules/.bin/mocha --compilers coffee:coffee-script --ui tdd --reporter spec --colors --slow 50 ./test/spooks.coffee'
+  lint: './node_modules/.bin/coffeelint -f config/coffeelint.json ./src/spooks.coffee'
   prepare: 'npm install'
 
 originalNodePath = process.env.NODE_PATH

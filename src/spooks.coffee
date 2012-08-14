@@ -1,8 +1,8 @@
 'use strict'
 
-mockObject = (options) ->
+createObject = (options) ->
   archetype = options.archetype
-  mock = options.mock || {}
+  spook = options.spook || {}
   log = options.log
   result = options.result
 
@@ -14,15 +14,15 @@ mockObject = (options) ->
 
   for own name, property of archetype
     if typeof property is 'function'
-      mock[name] = mockFunction {
+      spook[name] = createFunction {
         name
         log
         result
       }
 
-  mock
+  spook
 
-mockFunction = (options) ->
+createFunction = (options) ->
   name = options.name
   chain = options.chain
   log = options.log
@@ -54,6 +54,6 @@ logFunctionCall = (name, log, args) ->
   log.args[name].push args
 
 module.exports =
-  obj: mockObject
-  fn: mockFunction
+  obj: createObject
+  fn: createFunction
 

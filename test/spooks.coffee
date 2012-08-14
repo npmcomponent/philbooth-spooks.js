@@ -2,7 +2,7 @@
 
 {assert} = require 'chai'
 
-module = 'mock'
+module = 'spooks'
 
 suite 'no setup:', ->
   test 'require does not throw', ->
@@ -13,86 +13,86 @@ suite 'no setup:', ->
     assert.isObject require(module)
 
 suite 'require:', ->
-  mock = archetype = undefined
+  spooks = archetype = undefined
 
   setup ->
-    mock = require module
+    spooks = require module
     archetype = {}
 
   teardown ->
-    mock = archetype = undefined
+    spooks = archetype = undefined
 
   test 'fn function is defined', ->
-    assert.isFunction mock.fn
+    assert.isFunction spooks.fn
 
   test 'calling fn with an empty object throws', ->
     assert.throws ->
-      mock.fn {}
+      spooks.fn {}
 
   test 'calling fn with valid arguments does not throw', ->
     assert.doesNotThrow ->
-      mock.fn
+      spooks.fn
         name: 'foo'
         log: {}
 
   test 'calling fn with object name argument throws', ->
     assert.throws ->
-      mock.fn
+      spooks.fn
         name: {}
         log: {}
 
   test 'calling fn with number name argument throws', ->
     assert.throws ->
-      mock.fn
+      spooks.fn
         name: 42
         log: {}
 
   test 'calling fn with null log argument throws', ->
     assert.throws ->
-      mock.fn
+      spooks.fn
         name: 'foo'
         log: null
 
   test 'calling fn with valid arguments returns function', ->
-    assert.isFunction mock.fn(
+    assert.isFunction spooks.fn(
       name: 'bar'
       log: {}
     )
 
   test 'obj function is defined', ->
-    assert.isFunction mock.obj
+    assert.isFunction spooks.obj
 
   test 'calling obj with an empty object throws', ->
     assert.throws ->
-      mock.obj archetype, {}
+      spooks.obj archetype, {}
 
   test 'calling obj with valid arguments does not throw', ->
     assert.doesNotThrow ->
-      mock.obj
+      spooks.obj
         archetype: {}
         log: {}
 
   test 'calling obj with null archetype argument throws', ->
     assert.throws ->
-      mock.obj
+      spooks.obj
         archetype: null
         log: {}
 
   test 'calling obj with null log argument throws', ->
     assert.throws ->
-      mock.obj
+      spooks.obj
         archetype: {}
         log: null
 
   test 'calling obj with valid arguments returns object', ->
-    assert.isObject mock.obj(
+    assert.isObject spooks.obj(
       archetype: {}
       log: {}
     )
 
-  test 'calling obj with function mock argument returns function', ->
-    assert.isFunction mock.obj(
-      mock: ->
+  test 'calling obj with function spook argument returns function', ->
+    assert.isFunction spooks.obj(
+      spook: ->
       archetype: {}
       log: {}
     )
@@ -103,7 +103,7 @@ suite 'require:', ->
 
     setup ->
       log = {}
-      fn = mock.fn
+      fn = spooks.fn
         name: 'foo'
         log: log
 
@@ -125,14 +125,14 @@ suite 'require:', ->
     test 'log.args.foo has length zero', ->
       assert.lengthOf log.args.foo, 0
 
-    test 'calling mocked function does not throw', ->
+    test 'calling spooked function does not throw', ->
       assert.doesNotThrow ->
         fn()
 
-    test 'calling mocked function returns undefined', ->
+    test 'calling spooked function returns undefined', ->
       assert.isUndefined fn()
 
-    suite 'call mocked function with one argument:', ->
+    suite 'call spooked function with one argument:', ->
       setup ->
         fn 'foo'
 
@@ -148,7 +148,7 @@ suite 'require:', ->
       test 'log.args.foo[0][0] is foo', ->
         assert.strictEqual log.args.foo[0][0], 'foo'
 
-      suite 'call mocked function with a different argument', ->
+      suite 'call spooked function with a different argument', ->
         setup ->
           fn 'bar'
 
@@ -170,7 +170,7 @@ suite 'require:', ->
         test 'log.args.foo[1][0] is bar', ->
           assert.strictEqual log.args.foo[1][0], 'bar'
 
-        suite 'call mocked function with multiple arguments', ->
+        suite 'call spooked function with multiple arguments', ->
           setup ->
             fn 'foo', 'bar', 'baz'
 
@@ -210,7 +210,7 @@ suite 'require:', ->
 
     setup ->
       log = {}
-      fn = mock.fn
+      fn = spooks.fn
         name: 'bar'
         log: log
 
@@ -229,7 +229,7 @@ suite 'require:', ->
     test 'log.args.bar has length zero', ->
       assert.lengthOf log.args.bar, 0
 
-    suite 'call mocked function with one argument:', ->
+    suite 'call spooked function with one argument:', ->
       setup ->
         fn 'baz'
 
@@ -251,7 +251,7 @@ suite 'require:', ->
 
     setup ->
       log = {}
-      fn = mock.fn
+      fn = spooks.fn
         name: 'baz'
         log: log
         result: 'foo'
@@ -277,14 +277,14 @@ suite 'require:', ->
     test 'log.args.baz has length zero', ->
       assert.lengthOf log.args.baz, 0
 
-    test 'calling mocked function returns foo', ->
+    test 'calling spooked function returns foo', ->
       assert.strictEqual fn(), 'foo'
 
   suite 'call fn with different result:', ->
     fn = undefined
 
     setup ->
-      fn = mock.fn
+      fn = spooks.fn
         name: 'foo'
         log: {}
         result: 'bar'
@@ -292,14 +292,14 @@ suite 'require:', ->
     teardown ->
       fn = undefined
 
-    test 'calling mocked function returns bar', ->
+    test 'calling spooked function returns bar', ->
       assert.strictEqual fn(), 'bar'
 
   suite 'call fn with chain true:', ->
     fn = undefined
 
     setup ->
-      fn = mock.fn
+      fn = spooks.fn
         name: 'foo'
         log: {}
         chain: true
@@ -307,14 +307,14 @@ suite 'require:', ->
     teardown ->
       fn = undefined
 
-      test 'calling mocked function returns mocked function', ->
+      test 'calling spooked function returns spooked function', ->
         assert.strictEqual fn(), fn
 
   suite 'call fn with chain false:', ->
     fn = undefined
 
     setup ->
-      fn = mock.fn
+      fn = spooks.fn
         name: 'foo'
         log: {}
         chain: false
@@ -322,14 +322,14 @@ suite 'require:', ->
     teardown ->
       fn = undefined
 
-      test 'calling mocked function returns undefined', ->
+      test 'calling spooked function returns undefined', ->
         assert.isUndefined fn()
 
   suite 'call fn with chain true and result:', ->
     fn = undefined
 
     setup ->
-      fn = mock.fn
+      fn = spooks.fn
         name: 'foo'
         log: {}
         chain: true
@@ -338,7 +338,7 @@ suite 'require:', ->
     teardown ->
       fn = undefined
 
-      test 'calling mocked function returns mocked function', ->
+      test 'calling spooked function returns spooked function', ->
         assert.strictEqual fn(), fn
 
   suite 'call obj with name and log', ->
