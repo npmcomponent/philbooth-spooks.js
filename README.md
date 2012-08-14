@@ -86,8 +86,8 @@ function calls as well as details of any arguments passed to those function
 calls.
 
 `options.chain` is an optional boolean that can be used to indicate that the
-returned spy function must support chaining, i.e. return it's own `this` when
-invoked.
+returned spy function must support chaining (i.e. return it's own `this` when
+invoked).
 
 `options.result` is an optional result that will be returned by any spy
 spy methods that are invoked during your unit test setup.
