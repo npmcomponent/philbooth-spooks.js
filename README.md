@@ -35,8 +35,8 @@ argument.
 
 `options.archetype` must be a non-null, non-function object that will be
 used as a template from which to construct the generated spy. The returned
-spy will be given methods matching each of the _own_ methods (i.e. not those
-inherited from the object's prototype chain).
+spy will be given methods matching each of the _own_ methods (i.e. exclusing
+those inherited from the object's prototype chain).
 
 `options.log` must be a non-null object that will be used to store counts of
 method calls as well as details of any arguments passed to those method
