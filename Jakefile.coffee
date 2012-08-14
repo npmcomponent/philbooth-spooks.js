@@ -2,11 +2,6 @@
 
 {exec} = require 'child_process'
 
-desc 'Minify the source code for deployment.'
-task 'minify', [ 'jstest' ], ->
-  runTask minify, 'Minifying javascript...'
-, async: true
-
 desc 'Run the unit tests against the compiled output.'
 task 'jstest', [ 'compile' ], ->
   process.env.NODE_PATH = './build'
@@ -38,9 +33,6 @@ runTask = (operation, message) ->
   console.log message
   operation()
 
-minify = ->
-  runCommand commands.minify
-
 compile = ->
   runCommand commands.compile
 
@@ -66,7 +58,6 @@ after = () ->
   complete()
 
 commands =
-  minify: './node_modules/.bin/uglifyjs --no-copyright --lift-vars --output ./build/spooks.min.js ./build/spooks.js'
   compile: './node_modules/.bin/coffee -c -o ./build ./src/spooks.coffee'
   test: './node_modules/.bin/mocha --compilers coffee:coffee-script --ui tdd --reporter spec --colors --slow 50 ./test/spooks.coffee'
   lint: './node_modules/.bin/coffeelint -f config/coffeelint.json ./src/spooks.coffee'
