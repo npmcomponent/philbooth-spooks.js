@@ -1,23 +1,31 @@
 {
-    "name": "tiny-mock",
+    "name": "spooks",
     "version": "0.1.0",
     "author": "Phil Booth <pmbooth@gmail.com>",
-    "description": "a small library for creating mocks in coffeescript and javascript",
+    "description": "a small library for creating unit test spies in coffeescript and javascript",
     "contributors": {
         "name": "Phil Booth",
         "email": "pmbooth@gmail.com"
     },
-    "main": "./src/mock.coffee",
+    "main": "./src/spooks.coffee",
     "repository": {
         "type": "git",
-        "url": "https://github.com/philbooth/mock.coffee"
+        "url": "https://github.com/philbooth/spooks.coffee"
     },
     "keywords": [
-        "mock objects",
-        "mocking",
         "testing",
         "unit tests",
-        "assertions"
+        "assertions",
+        "test doubles",
+        "spy objects",
+        "mock objects",
+        "fake objects",
+        "dummy objects",
+        "spies",
+        "stubs",
+        "mocks",
+        "fakes",
+        "dummies"
     ],
     "dependencies": {
         "jake": "0.3.x",
