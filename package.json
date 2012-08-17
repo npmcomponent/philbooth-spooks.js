@@ -1,6 +1,6 @@
 {
     "name": "spooks",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "author": "Phil Booth <pmbooth@gmail.com>",
     "description": "a small library for creating unit test spies in coffeescript and javascript",
     "contributors": {
@@ -27,7 +27,7 @@
         "fakes",
         "dummies"
     ],
-    "dependencies": {
+    "devDependencies": {
         "jake": "0.3.x",
         "minimatch": "0.2.x",
         "coffee-script": "1.3.x",
