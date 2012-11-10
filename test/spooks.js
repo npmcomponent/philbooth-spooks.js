@@ -460,7 +460,7 @@ suite('require:', function () {
         });
     });
 
-    suite('call obj with archetype and log:', function () {
+    suite('call obj with archetype, log and results:', function () {
         var log, object;
 
         setup(function () {
@@ -470,7 +470,10 @@ suite('require:', function () {
                     foo: function () {},
                     bar: function () {}
                 },
-                log: log
+                log: log,
+                results: {
+                    bar: 'bar'
+                }
             });
         });
 
@@ -534,8 +537,8 @@ suite('require:', function () {
             });
         });
 
-        test('calling spooked method bar returns undefined', function () {
-            assert.isUndefined(object.bar());
+        test('calling spooked method bar returns bar', function () {
+            assert.strictEqual(object.bar(), 'bar');
         });
 
         suite('call spooked method foo:', function () {

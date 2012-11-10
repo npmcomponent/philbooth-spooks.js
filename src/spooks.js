@@ -36,11 +36,10 @@
      *                            spy methods.
      */
     function createObject (options) {
-        // TODO: Convert result object to property bag.
-
-        var property,
-            archetype = options.archetype,
-            spook = options.spook || {};
+        var archetype = options.archetype,
+            spook = options.spook || {},
+            results = options.results || {},
+            property;
 
         if (isNotObject(archetype) && isNotFunction(archetype)) {
             throw new Error('Invalid archetype');
@@ -55,7 +54,7 @@
                 spook[property] = createFunction({
                     name: property,
                     log: options.log,
-                    result: options.result
+                    result: results[property]
                 });
             }
         }
