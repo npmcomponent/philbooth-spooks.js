@@ -39,17 +39,17 @@ Two functions are exported:
 Returns a unit test spy object,
 based on the properties of the `options` argument.
 
-`options.archetype` must be a non-null, non-function object
+`options.archetype` must be a non-null object
 that will be used as a template
-from which to construct the generated spy.
+from which to define the generated spy.
 The returned spy will be given methods
-matching each of the archetype's _own_ methods
+matching each of the archetype's _*own*_ methods
 (i.e. excluding those inherited from the its prototype chain).
 
 `options.log` must be a non-null object
 that will be used to store counts of method calls
-as well as details of any arguments
-passed to those methods.
+as well as any arguments passed to those methods,
+on the `counts` and `args` properties respectively.
 
 `options.spook` is an optional object
 that can be used as the base object
@@ -58,11 +58,11 @@ If it is not specified,
 a fresh object will be returned instead.
 
 `options.results` is an optional object
-containing values that will be returned by any spy methods
-that are invoked during your unit test setup.
+containing values that will be returned
+by any spy methods that are invoked.
 The values are keyed by method name.
 
-e.g.:
+e.g. if you wanted to mock jQuery:
 
 ```
 // Create the spy object.
@@ -79,6 +79,9 @@ $ = spooks.obj({
 assert.strictEqual(log.counts.ajax, 1);
 assert.lengthOf(log.args.ajax[0], 2);
 assert.strictEqual(log.args.ajax[0][0], '/users/1.json');
+
+// Reinstate the original object.
+$ = jQuery;
 ```
 
 #### spooks.fn (options)
@@ -93,7 +96,8 @@ although it doesn't have to.
 
 `options.log` must be a non-null object
 that will be used to store the count of calls made to the spy
-as well as any arguments passed to it.
+as well as any arguments passed to it,
+on the `counts[name]` and `args[name]` properties respectively.
 
 `options.chain` is an optional boolean
 that can be used to indicate that the returned spy function should support chaining
@@ -103,11 +107,11 @@ that can be used to indicate that the returned spy function should support chain
 that will be returned by the returned spy function
 (ignored if `chain` is `true`).
 
-e.g.:
+e.g. if you wanted to mock the setTimeout function:
 
 ```
 // Create the spy function.
-var log = {};
+var log = {}, originalSetTimeout = setTimeout;
 setTimeout = spooks.fn({
     name: 'setTimeout',
     log: log
@@ -121,6 +125,9 @@ assert.strictEqual(log.counts.setTimeout, 1);
 assert.lengthOf(log.args.setTimeout[0], 2);
 assert.isFunction(log.args.setTimeout[0][0]);
 assert.strictEqual(log.args.setTimeout[0][1], 1000);
+
+// Reinstate the original function.
+setTimeout = originalSetTimeout;
 ```
 
 ## Development
