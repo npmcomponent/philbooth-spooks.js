@@ -47,9 +47,10 @@ matching each of the archetype's _*own*_ methods
 (i.e. excluding those inherited from the its prototype chain).
 
 `options.log` must be a non-null object
-that will be used to store counts of method calls
-as well as any arguments passed to those methods,
-on the `counts` and `args` properties respectively.
+that will be used to store counts of method calls,
+any arguments passed to those methods
+and the `this` context for each call,
+on the `counts`, `args` and `these` properties respectively.
 
 `options.spook` is an optional object
 that can be used as the base object
@@ -96,8 +97,9 @@ although it doesn't have to.
 
 `options.log` must be a non-null object
 that will be used to store the count of calls made to the spy
-as well as any arguments passed to it,
-on the `counts[name]` and `args[name]` properties respectively.
+any arguments passed to it
+and the `this` context for each call,
+on the `counts[name]`, `args[name]` and `these[name]` properties respectively.
 
 `options.chain` is an optional boolean
 that can be used to indicate that the returned spy function should support chaining
