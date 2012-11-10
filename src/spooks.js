@@ -101,13 +101,14 @@
             throw new Error('Invalid function name');
         }
 
-        initialiseProperty(log, 'counts', {});
-        initialiseProperty(log.counts, name, 0);
-        initialiseProperty(log, 'args', {});
-        initialiseProperty(log.args, name, []);
+        initialiseLogProperties(log, name, {
+            counts: 0,
+            args: [],
+            these: []
+        });
 
         return function () {
-            logFunctionCall(name, log, arguments);
+            logFunctionCall(name, log, arguments, this);
 
             if (chain === true) {
                 return this;
@@ -117,15 +118,32 @@
         };
     }
 
+    function initialiseLogProperties (log, name, properties) {
+        var property;
+
+        for (property in properties) {
+            if (properties.hasOwnProperty(property)) {
+                initialiseLogProperty(log, property, name, properties[property]);
+            }
+        }
+    }
+
+    function initialiseLogProperty (log, property, name, value) {
+        initialiseProperty(log, property, {});
+        initialiseProperty(log[property], name, value);
+    }
+
     function initialiseProperty (object, property, value) {
         if (typeof object[property] === 'undefined') {
             object[property] = value;
         }
     }
 
-    function logFunctionCall (name, log, args) {
+    function logFunctionCall (name, log, args, that) {
+        /*jshint validthis:true */
         log.counts[name] += 1;
         log.args[name].push(args);
+        log.these[name].push(that);
     }
 }());
 

@@ -167,6 +167,18 @@ suite('require:', function () {
             assert.lengthOf(log.args.foo, 0);
         });
 
+        test('log has these object', function () {
+            assert.isObject(log.these);
+        });
+
+        test('log.these has foo array', function () {
+            assert.isArray(log.these.foo);
+        });
+
+        test('log.these.foo has length zero', function () {
+            assert.lengthOf(log.these.foo, 0);
+        });
+
         test('calling spooked function does not throw', function () {
             assert.doesNotThrow(function () {
                 fn();
@@ -198,6 +210,14 @@ suite('require:', function () {
                 assert.strictEqual(log.args.foo[0][0], 'foo');
             });
 
+            test('log.these.foo has length one', function () {
+                assert.lengthOf(log.these.foo, 1);
+            });
+
+            test('log.these.foo[0] is undefined', function () {
+                assert.isUndefined(log.these.foo[0]);
+            });
+
             suite('call spooked function with a different argument', function () {
                 setup(function () {
                     fn('bar');
@@ -225,6 +245,18 @@ suite('require:', function () {
 
                 test('log.args.foo[1][0] is bar', function () {
                     assert.strictEqual(log.args.foo[1][0], 'bar');
+                });
+
+                test('log.these.foo has length two', function () {
+                    assert.lengthOf(log.these.foo, 2);
+                });
+
+                test('log.these.foo[0] is undefined', function () {
+                    assert.isUndefined(log.these.foo[0]);
+                });
+
+                test('log.these.foo[1] is undefined', function () {
+                    assert.isUndefined(log.these.foo[1]);
                 });
 
                 suite('call spooked function with multiple arguments', function () {
@@ -305,6 +337,14 @@ suite('require:', function () {
 
         test('log.args.bar has length zero', function () {
             assert.lengthOf(log.args.bar, 0);
+        });
+
+        test('log.these.foo is undefined', function () {
+            assert.isUndefined(log.these.foo);
+        });
+
+        test('log.these.bar has length zero', function () {
+            assert.lengthOf(log.these.bar, 0);
         });
 
         suite('call spooked function with one argument:', function () {
@@ -455,8 +495,31 @@ suite('require:', function () {
             object = undefined;
         });
 
-        test('calling spooked function returns spooked function', function () {
+        test('calling spooked function returns context object function', function () {
             assert.strictEqual(object.fn(), object);
+        });
+    });
+
+    suite('call fn in specific context:', function () {
+        var log, object;
+
+        setup(function () {
+            log = {};
+            object = {
+                fn: spooks.fn({
+                    name: 'foo',
+                    log: log
+                })
+            };
+            object.fn();
+        });
+
+        teardown(function () {
+            log = object = undefined;
+        });
+
+        test('log.these.foo[0] is context object', function () {
+            assert.strictEqual(log.these.foo[0], object);
         });
     });
 
@@ -501,6 +564,18 @@ suite('require:', function () {
             assert.lengthOf(log.args.foo, 0);
         });
 
+        test('log has these object', function () {
+            assert.isObject(log.these);
+        });
+
+        test('log.these has foo array', function () {
+            assert.isArray(log.these.foo);
+        });
+
+        test('log.these.foo has length zero', function () {
+            assert.lengthOf(log.these.foo, 0);
+        });
+
         test('log.counts.bar is zero', function () {
             assert.strictEqual(log.counts.bar, 0);
         });
@@ -511,6 +586,14 @@ suite('require:', function () {
 
         test('log.args.bar has length zero', function () {
             assert.lengthOf(log.args.bar, 0);
+        });
+
+        test('log.these has bar array', function () {
+            assert.isArray(log.these.bar);
+        });
+
+        test('log.these.bar has length zero', function () {
+            assert.lengthOf(log.these.bar, 0);
         });
 
         test('object has method foo', function () {
