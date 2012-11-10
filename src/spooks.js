@@ -27,8 +27,8 @@
      * @option archetype {object} Template object. The returned spy will have
      *                            methods matching the archetype's methods.
      * @option log {object}       Object used to store spy method call counts
-     *                            and arguments, on the properties `counts`
-     *                            `args` respectively.
+     *                            and arguments, on the properties `counts`,
+     *                            `args` and `these` respectively.
      * @option [spook] {object}   Optional base object to add spy methods to.
      *                            If not specified, a new clean object will
      *                            be created instead.
@@ -83,8 +83,8 @@
      * @option name {object}     The name of the function being mocked, used
      *                           as a key into the `log` object.
      * @option log {object}      Object used to store call counts and arguments,
-     *                           on properties `counts[name]` and `args[name]`
-     *                           respecitvely.
+     *                           on properties `counts[name]`, `args[name]` and
+     *                           `these[name]` respecitvely.
      * @option [chain] {boolean} Optional flag specifying whether the spy
      *                           function supports chaining (i.e. it returns
      *                           its own `this`). Defaults to `false`.
