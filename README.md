@@ -57,9 +57,10 @@ to augment with spy methods.
 If it is not specified,
 a fresh object will be returned instead.
 
-`options.result` is an optional result
-that will be returned by any spy methods
+`options.results` is an optional object
+containing values that will be returned by any spy methods
 that are invoked during your unit test setup.
+The values are keyed by method name.
 
 e.g.:
 
