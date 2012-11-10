@@ -1,6 +1,6 @@
 {
     "name": "spooks",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "author": "Phil Booth <pmbooth@gmail.com>",
     "description": "A small library for creating unit test spies.",
     "contributors": {
