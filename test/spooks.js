@@ -725,5 +725,39 @@ suite('require:', function () {
             assert.isFunction(spook.foo);
         });
     });
+
+    suite('call obj with chains and returns:', function () {
+        var log, object;
+
+        setup(function () {
+            log = {};
+            object = spooks.obj({
+                archetype: {
+                    foo: function () {},
+                    bar: function () {}
+                },
+                log: {},
+                chains: {
+                    bar: true
+                },
+                results: {
+                    foo: 'foo',
+                    bar: 'bar'
+                }
+            });
+        });
+
+        teardown(function () {
+            log = object = undefined;
+        });
+
+        test('object.foo returns foo', function () {
+            assert.strictEqual(object.foo(), 'foo');
+        });
+
+        test('object.bar returns object', function () {
+            assert.strictEqual(object.bar(), object);
+        });
+    });
 });
 

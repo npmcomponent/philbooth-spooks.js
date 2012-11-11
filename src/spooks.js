@@ -31,12 +31,17 @@
      * @option [spook] {object}   Optional base object to add spy methods to.
      *                            If not specified, a new clean object will
      *                            be created instead.
-     * @option [result] {var}     Optional result that will be returned from
-     *                            spy methods.
+     * @option [chains] {object}  Optional object containing flags indicating
+     *                            whether spy methods shoulds be chainable.
+     *                            The flags are keyed by method name.
+     * @option [results] {object} Optional object containing values that will
+     *                            be returned from spy methods. The values
+     *                            are keyed by method name.
      */
     function createObject (options) {
         var archetype = options.archetype,
             spook = options.spook || {},
+            chains = options.chains || {},
             results = options.results || {},
             property;
 
@@ -53,6 +58,7 @@
                 spook[property] = createFunction({
                     name: property,
                     log: options.log,
+                    chain: chains[property],
                     result: results[property]
                 });
             }
