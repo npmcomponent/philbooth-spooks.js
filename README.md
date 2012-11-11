@@ -34,82 +34,39 @@ var spooks = require('spooks');
 
 Two functions are exported:
 
-#### spooks.obj (options)
-
-Returns a unit test spy object,
-based on the properties of the `options` argument.
-
-`options.archetype` must be a non-null object
-that will be used as a template
-from which to define the generated spy.
-The returned spy will be given methods
-matching each of the archetype's _*own*_ methods
-(i.e. excluding those inherited from the its prototype chain).
-
-`options.log` must be a non-null object
-that will be used to store counts of method calls,
-any arguments passed to those methods
-and the `this` context for each call,
-on the `counts`, `args` and `these` properties respectively.
-
-`options.spook` is an optional object
-that can be used as the base object
-to augment with spy methods.
-If it is not specified,
-a fresh object will be returned instead.
-
-`options.results` is an optional object
-containing values that will be returned
-by any spy methods that are invoked.
-The values are keyed by method name.
-
-e.g. if you wanted to mock jQuery:
-
-```
-// Create the spy object.
-var log = {};
-$ = spooks.obj({
-    archetype: jQuery,
-    log: log
-});
-
-// Perform some test setup.
-...
-
-// Assert that the spy was called as expected.
-assert.strictEqual(log.counts.ajax, 1);
-assert.lengthOf(log.args.ajax[0], 2);
-assert.strictEqual(log.args.ajax[0][0], '/users/1.json');
-
-// Reinstate the original object.
-$ = jQuery;
-```
-
 #### spooks.fn (options)
 
 Returns a unit test spy function,
 based on the properties of the `options` argument.
 
 `options.name` must be a string identifying the function,
-to be used when fetching the call count or arguments for that function.
-You probably want this to match the actual name of the function,
+to be used when fetching the count,
+arguments
+or contexts
+of calls to the returned spy function.
+You probably want this to match
+the actual name of the function,
 although it doesn't have to.
 
 `options.log` must be a non-null object
 that will be used to store the count of calls made to the spy,
 any arguments passed to it
 and the `this` context for each call,
-on the `counts[name]`, `args[name]` and `these[name]` properties respectively.
+on the `counts[name]`,
+`args[name]`
+and `these[name]`
+properties respectively.
 
 `options.chain` is an optional boolean
-that can be used to indicate that the returned spy function should support chaining
+that can be used to indicate that
+the returned spy function should support chaining
 (i.e. return it's own `this` when invoked).
 
 `options.result` is an optional result
 that will be returned by the returned spy function
 (ignored if `chain` is `true`).
 
-e.g. if you wanted to mock the setTimeout function:
+e.g. to mock the `setTimeout` function:
 
 ```
 // Create the spy function.
@@ -130,6 +87,63 @@ assert.strictEqual(log.args.setTimeout[0][1], 1000);
 
 // Reinstate the original function.
 setTimeout = originalSetTimeout;
+```
+
+#### spooks.obj (options)
+
+Returns a unit test spy object,
+based on the properties of the `options` argument.
+
+`options.archetype` must be a non-null object
+that will be used as a template
+from which to define the generated spy.
+The returned spy will be given methods
+matching each of the archetype's _**own**_ methods
+(i.e. excluding those inherited from its prototype chain).
+
+`options.log` must be a non-null object
+that will be used to store counts of method calls,
+any arguments passed to those methods
+and the `this` context for each call,
+on the `counts`, `args` and `these` properties respectively.
+
+`options.spook` is an optional object
+that can be used as the base object
+to augment with spy methods.
+If it is not specified,
+a fresh object will be returned instead.
+
+`options.results` is an optional object
+containing values that will be returned
+by any spy methods that are invoked.
+The values are keyed by method name.
+
+e.g. to mock jQuery:
+
+```
+// Create the spy object.
+var log = {};
+$ = spooks.fn({
+    name: 'jQuery',
+    log: log
+});
+spooks.obj({
+    archetype: jQuery,
+    log: log,
+    spook: $
+});
+
+// Perform some test setup.
+...
+
+// Assert that the spy was called as expected.
+assert.strictEqual(log.counts.jQuery, 0);
+assert.strictEqual(log.counts.ajax, 1);
+assert.lengthOf(log.args.ajax[0], 2);
+assert.strictEqual(log.args.ajax[0][0], '/users/1.json');
+
+// Reinstate the original object.
+$ = jQuery;
 ```
 
 ## Development
