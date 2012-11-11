@@ -113,19 +113,29 @@ to augment with spy methods.
 If it is not specified,
 a fresh object will be returned instead.
 
+`options.chains` is an optional object
+containing boolean flags that indicate whether
+spy methods should support chaining.
+The flags are keyed by method name.
+
 `options.results` is an optional object
 containing values that will be returned
-from any spy methods.
+from spy methods.
 The values are keyed by method name.
 
 e.g. to mock jQuery:
 
 ```
 // Create the spy object.
-var log = {};
+var log = {},
+jqElement = spooks.obj({
+    archetype: jQuery('body'),
+    log: log
+});
 $ = spooks.fn({
     name: 'jQuery',
-    log: log
+    log: log,
+    result: jqElement
 });
 spooks.obj({
     archetype: jQuery,
@@ -136,11 +146,14 @@ spooks.obj({
 // Perform some test setup.
 ...
 
-// Assert that the spy was called as expected.
-assert.strictEqual(log.counts.jQuery, 0);
+// Assert that the spies were called as expected.
+assert.strictEqual(log.counts.jQuery, 1);
+assert.lengthOf(log.args.jQuery[0], 1);
+assert.strictEqual(log.args.jQuery[0][0], '#input-user-id');
 assert.strictEqual(log.counts.ajax, 1);
 assert.lengthOf(log.args.ajax[0], 2);
 assert.strictEqual(log.args.ajax[0][0], '/users/1.json');
+assert.isObject(log.args.ajax[0][1]);
 
 // Reinstate the original object.
 $ = jQuery;
