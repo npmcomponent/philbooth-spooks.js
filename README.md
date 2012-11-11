@@ -96,7 +96,7 @@ You probably want this to match the actual name of the function,
 although it doesn't have to.
 
 `options.log` must be a non-null object
-that will be used to store the count of calls made to the spy
+that will be used to store the count of calls made to the spy,
 any arguments passed to it
 and the `this` context for each call,
 on the `counts[name]`, `args[name]` and `these[name]` properties respectively.
