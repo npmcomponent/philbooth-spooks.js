@@ -115,7 +115,7 @@ a fresh object will be returned instead.
 
 `options.results` is an optional object
 containing values that will be returned
-by any spy methods that are invoked.
+from any spy methods.
 The values are keyed by method name.
 
 e.g. to mock jQuery:
