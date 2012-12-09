@@ -906,5 +906,85 @@ suite('require:', function () {
             assert.strictEqual(object.bar(), object);
         });
     });
+
+    suite('call ctor with actual constructor [sanity check]:', function () {
+        var log, ctor, instance;
+
+        setup(function () {
+            log = {};
+            ctor = spooks.ctor({
+                name: 'Ctor',
+                log: log,
+                archetype: {
+                    ctor: Ctor
+                },
+                chains: {
+                    foo: true
+                },
+                results: {
+                    bar: 'baz'
+                }
+            });
+            instance = new ctor;
+
+            function Ctor () {
+                this.foo = function () {};
+                this.bar = function () {};
+                return this;
+            }
+        });
+
+        teardown(function () {
+            log = ctor = instance = undefined;
+        });
+
+        test('instance has method foo', function () {
+            assert.isFunction(instance.foo);
+        });
+
+        test('instance has method bar', function () {
+            assert.isFunction(instance.bar);
+        });
+
+        test('instance has two properties', function () {
+            var count = 0, property;
+
+            for (property in instance) {
+                if (instance.hasOwnProperty(property)) {
+                    count += 1;
+                }
+            }
+
+            assert.strictEqual(count, 2);
+        });
+
+        test('instance.foo returns instance', function () {
+            assert.strictEqual(instance.foo(), instance);
+        });
+
+        test('instance.bar returns baz', function () {
+            assert.strictEqual(instance.bar(), 'baz');
+        });
+
+        test('log.counts.foo is zero', function () {
+            assert.strictEqual(log.counts.foo, 0);
+        });
+
+        test('log.counts.bar is zero', function () {
+            assert.strictEqual(log.counts.bar, 0);
+        });
+    });
+
+    test('calling ctor with valid ctor arguments does not throw', function () {
+        assert.doesNotThrow(function () {
+            spooks.ctor({
+                name: 'foo',
+                log: {},
+                archetype: {
+                    ctor: function () { return {}; }
+                }
+            });
+        });
+    });
 });
 
