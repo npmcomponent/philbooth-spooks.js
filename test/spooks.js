@@ -132,6 +132,10 @@ suite('require:', function () {
         }));
     });
 
+    test('ctor function is defined', function () {
+        assert.isFunction(spooks.ctor);
+    });
+
     suite('call fn with name and log:', function () {
         var log, fn;
 
@@ -218,7 +222,7 @@ suite('require:', function () {
                 assert.isUndefined(log.these.foo[0]);
             });
 
-            suite('call spooked function with a different argument', function () {
+            suite('call spooked function with a different argument:', function () {
                 setup(function () {
                     fn('bar');
                 });
@@ -259,7 +263,7 @@ suite('require:', function () {
                     assert.isUndefined(log.these.foo[1]);
                 });
 
-                suite('call spooked function with multiple arguments', function () {
+                suite('call spooked function with multiple arguments:', function () {
                     setup(function () {
                         fn('foo', 'bar', 'baz');
                     });
