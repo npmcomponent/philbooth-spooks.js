@@ -92,9 +92,9 @@
     /**
      * Public function `obj`.
      *
-     * Returns a unit test spy object.
+     * Returns a mock object that contains unit test spy methods.
      *
-     * @option archetype {object} Template object. The returned spy will have
+     * @option archetype {object} Template object. The returned mock will have
      *                            methods matching the archetype's methods.
      * @option log {object}       Object used to store spy method call counts,
      *                            arguments and contexts, on the properties
