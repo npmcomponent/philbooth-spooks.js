@@ -163,16 +163,16 @@
      * @option log {object}       Object used to store call counts, arguments
      *                            and contexts, on properties `counts[name]`,
      *                            `args[name]` and `these[name]` respecitvely.
-     * @option archetype {object} Optional archetype that is used to construct
-     *                            the spy instances that will be returned by
-     *                            the spy constructor. It must either have the
-     *                            property `instance`, an object that will be
-     *                            used as the template for spy instances, or
-     *                            the property `ctor`, a function that returns
-     *                            an object that will be used as the template
-     *                            for spy instances. If `ctor` is specified, the
+     * @option archetype {object} Optional archetype used to construct the spy
+     *                            instances that will be returned by the spy
+     *                            constructor. It must have either the property
+     *                            `instance`, an object that will be used as the
+     *                            template for spy instances, or the property
+     *                            `ctor`, a function that returns the template
+     *                            (usually this will be the constructor that is
+     *                            being mocked). If `ctor` is specified, the
      *                            property `args` may also be set to specify the
-     *                            arguments to pass to the ctor function.
+     *                            arguments to pass to that function.
      */
     function createConstructor (options) {
         var name = options.name,
