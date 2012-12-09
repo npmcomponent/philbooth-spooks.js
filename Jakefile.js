@@ -7,8 +7,8 @@
     var exec = require('child_process').exec,
 
     commands = {
-        minify: './node_modules/.bin/uglifyjs --no-copyright --lift-vars --output ./src/spooks.min.js ./src/spooks.js',
-        test: './node_modules/.bin/mocha --ui tdd --reporter spec --colors --slow 50 ./test/spooks.js',
+        minify: './node_modules/.bin/uglifyjs ./src/spooks.js --compress --mangle --output ./src/spooks.min.js',
+        test: './node_modules/.bin/mocha --ui tdd --reporter spec --colors ./test/spooks.js',
         lint: './node_modules/.bin/jshint ./src/spooks.js --config config/jshint.json',
         prepare: 'npm install'
     };
