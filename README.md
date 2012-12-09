@@ -22,9 +22,8 @@ git clone git@github.com:philbooth/spooks.js.git
 
 Or use one of the growing number of package managers, such as
 [Jam][jam],
-[Ender][ender],
 [Bower][bower]
-(the package name for all three is 'spooks')
+(the package name for both is 'spooks')
 or [Component][component] ('philbooth/spooks.js').
 
 ## Usage
