@@ -25,7 +25,7 @@
         "stub"
     ],
     "jam": {
-        "main": "src/spooks.js",
+        "main": "src/spooks.js"
     },
     "devDependencies": {
         "jake": "0.5.x",
