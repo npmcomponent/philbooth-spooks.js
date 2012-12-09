@@ -139,7 +139,7 @@
     }
 
     function isNotObject (thing) {
-        return typeof thing !== 'object' || thing === null;
+        return isObject(thing) === false;
     }
 
     function isNotFunction (thing) {

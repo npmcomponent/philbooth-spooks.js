@@ -166,6 +166,64 @@ suite('require:', function () {
         });
     });
 
+    test('calling ctor with invalid instance argument throws', function () {
+        assert.throws(function () {
+            spooks.ctor({
+                name: 'foo',
+                log: {},
+                archetype: {
+                    instance: 'bar'
+                }
+            });
+        });
+    });
+
+    test('calling ctor with invalid ctor argument throws', function () {
+        assert.throws(function () {
+            spooks.ctor({
+                name: 'foo',
+                log: {},
+                archetype: {
+                    ctor: function () { return 'bar'; }
+                }
+            });
+        });
+    });
+
+    test('calling ctor with invalid conditional ctor argument throws', function () {
+        assert.throws(function () {
+            spooks.ctor({
+                name: 'foo',
+                log: {},
+                archetype: {
+                    ctor: function () {
+                        if (arguments.length === 1 && arguments[0] === 'bar') {
+                            return {};
+                        }
+                    },
+                    args: [ 'baz' ]
+                }
+            });
+        });
+    });
+
+    test('calling ctor with valid conditional ctor argument does not throw', function () {
+        assert.doesNotThrow(function () {
+            spooks.ctor({
+                name: 'foo',
+                log: {},
+                archetype: {
+                    ctor: function () {
+                        if (arguments.length === 1 && arguments[0] === 'bar') {
+                            return {};
+                        }
+                    },
+                    args: [ 'bar' ]
+                }
+            });
+        });
+    });
+
     test('calling ctor with valid instance arguments returns function', function () {
         assert.isFunction(spooks.ctor({
             name: 'foo',
@@ -202,6 +260,21 @@ suite('require:', function () {
             log: {},
             archetype: {
                 ctor: function () { return {}; }
+            }
+        })());
+    });
+
+    test('calling conditional ctor(ctor) result returns object', function () {
+        assert.isObject(spooks.ctor({
+            name: 'foo',
+            log: {},
+            archetype: {
+                ctor: function () {
+                    if (arguments.length === 1 && arguments[0] === 'foo') {
+                        return {};
+                    }
+                },
+                args: [ 'foo' ]
             }
         })());
     });
