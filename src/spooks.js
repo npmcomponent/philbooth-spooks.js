@@ -8,15 +8,43 @@
     'use strict';
 
     var functions = {
+        ctor: createConstructor,
         obj: createObject,
-        fn: createFunction,
-        ctor: createConstructor
+        fn: createFunction
     };
 
     if (typeof module === 'undefined' || module === null) {
         window.spooks = functions;
     } else {
         module.exports = functions;
+    }
+
+    /**
+     * Public function `ctor`.
+     *
+     * Returns a unit test spy constructor, which returns instances that are
+     * themselves unit test spies.
+     *
+     * @option name {object}      The name of the constructor being mocked, used
+     *                            as a key into the `log` object.
+     * @option log {object}       Object used to store call counts, arguments
+     *                            and contexts, on properties `counts[name]`,
+     *                            `args[name]` and `these[name]` respecitvely.
+     * @option archetype {object} Optional archetype used to construct the spy
+     *                            instances that will be returned by the spy
+     *                            constructor. It must have either the property
+     *                            `instance`, an object that will be used as the
+     *                            template for spy instances, or the property
+     *                            `ctor`, a function that returns the template
+     *                            (usually this will be the constructor that is
+     *                            being mocked). If `ctor` is specified, the
+     *                            property `args` may also be set to specify the
+     *                            arguments to pass to that function.
+     */
+    function createConstructor (options) {
+        var name = options.name,
+            log = options.log,
+            archetype = options.archetype;
     }
 
     /**
@@ -149,35 +177,6 @@
         log.counts[name] += 1;
         log.args[name].push(args);
         log.these[name].push(that);
-    }
-
-
-    /**
-     * Public function `ctor`.
-     *
-     * Returns a unit test spy constructor, which returns instances that are
-     * themselves unit test spies.
-     *
-     * @option name {object}      The name of the constructor being mocked, used
-     *                            as a key into the `log` object.
-     * @option log {object}       Object used to store call counts, arguments
-     *                            and contexts, on properties `counts[name]`,
-     *                            `args[name]` and `these[name]` respecitvely.
-     * @option archetype {object} Optional archetype used to construct the spy
-     *                            instances that will be returned by the spy
-     *                            constructor. It must have either the property
-     *                            `instance`, an object that will be used as the
-     *                            template for spy instances, or the property
-     *                            `ctor`, a function that returns the template
-     *                            (usually this will be the constructor that is
-     *                            being mocked). If `ctor` is specified, the
-     *                            property `args` may also be set to specify the
-     *                            arguments to pass to that function.
-     */
-    function createConstructor (options) {
-        var name = options.name,
-            log = options.log,
-            archetype = options.archetype;
     }
 }());
 
