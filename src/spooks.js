@@ -1,5 +1,5 @@
 /**
- * This module exports functions for creating unit test spies.
+ * This module exports functions for creating unit test spies and mock objects.
  */
 
 /*globals module, window */
@@ -22,7 +22,7 @@
     /**
      * Public function `ctor`.
      *
-     * Returns a unit test spy constructor, which returns instances that are
+     * Returns a unit test spy constructor, which returns mock instances that are
      * themselves unit test spies.
      *
      * @option name {object}      The name of the constructor being mocked, used
@@ -30,22 +30,22 @@
      * @option log {object}       Object used to store call counts, arguments
      *                            and contexts, on properties `counts[name]`,
      *                            `args[name]` and `these[name]` respecitvely.
-     * @option archetype {object} Optional archetype used to construct the spy
+     * @option archetype {object} Optional archetype used to construct the mock
      *                            instances that will be returned by the spy
      *                            constructor. It must have either the property
      *                            `instance`, an object that will be used as the
-     *                            template for spy instances, or the property
+     *                            template for mock instances, or the property
      *                            `ctor`, a function that returns the template
      *                            (usually this will be the constructor that is
      *                            being mocked). If `ctor` is specified, the
      *                            property `args` may also be set to specify the
      *                            arguments to pass to that function.
      * @option [chains] {object}  Optional object containing flags indicating
-     *                            whether methods of the spy instances should
+     *                            whether methods of the mock instances should
      *                            be chainable.  The flags are keyed by method
      *                            name.
      * @option [results] {object} Optional object containing values that will
-     *                            be returned from methods of the spy instances.
+     *                            be returned from methods of the mock instances.
      *                            The values are keyed by method name.
      */
     function createConstructor (options) {
