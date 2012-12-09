@@ -10,11 +10,22 @@ in JavaScript.
 
 ### Node.js
 
-`npm install spooks`
+```
+npm install spooks
+```
 
 ### Browser
 
-`git clone git@github.com:philbooth/spooks.js.git`
+```
+git clone git@github.com:philbooth/spooks.js.git
+```
+
+Or use one of the growing number of package managers, such as
+[Jam][jam],
+[Ender][ender],
+[Bower][bower]
+(the package name for all three is 'spooks')
+or [Component][component] ('philbooth/spooks.js').
 
 ## Usage
 
@@ -31,13 +42,6 @@ var spooks = require('spooks');
 ```
 <script type="text/javascript" src="spooks.js/src/spooks.min.js"></script>
 ```
-
-Or use one of the growing number of package managers, such as
-[Jam][jam],
-[Ender][ender],
-[Bower][bower]
-(the package name for all three is 'spooks')
-or [Component][component] ('philbooth/spooks.js').
 
 ### Calling the exported functions
 
