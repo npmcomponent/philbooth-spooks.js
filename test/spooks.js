@@ -136,6 +136,76 @@ suite('require:', function () {
         assert.isFunction(spooks.ctor);
     });
 
+    test('calling ctor with an empty object throws', function () {
+        assert.throws(function () {
+            spooks.ctor({});
+        });
+    });
+
+    test('calling ctor with valid instance arguments does not throw', function () {
+        assert.doesNotThrow(function () {
+            spooks.ctor({
+                name: 'foo',
+                log: {},
+                archetype: {
+                    instance: {}
+                }
+            });
+        });
+    });
+
+    test('calling ctor with valid ctor arguments does not throw', function () {
+        assert.doesNotThrow(function () {
+            spooks.ctor({
+                name: 'foo',
+                log: {},
+                archetype: {
+                    ctor: function () { return {}; }
+                }
+            });
+        });
+    });
+
+    test('calling ctor with valid instance arguments returns function', function () {
+        assert.isFunction(spooks.ctor({
+            name: 'foo',
+            log: {},
+            archetype: {
+                instance: {}
+            }
+        }));
+    });
+
+    test('calling ctor with valid ctor arguments returns function', function () {
+        assert.isFunction(spooks.ctor({
+            name: 'foo',
+            log: {},
+            archetype: {
+                ctor: function () { return {}; }
+            }
+        }));
+    });
+
+    test('calling ctor(instance) result returns object', function () {
+        assert.isObject(spooks.ctor({
+            name: 'foo',
+            log: {},
+            archetype: {
+                instance: {}
+            }
+        })());
+    });
+
+    test('calling ctor(ctor) result returns object', function () {
+        assert.isObject(spooks.ctor({
+            name: 'foo',
+            log: {},
+            archetype: {
+                ctor: function () { return {}; }
+            }
+        })());
+    });
+
     suite('call fn with name and log:', function () {
         var log, fn;
 

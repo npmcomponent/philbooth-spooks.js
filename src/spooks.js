@@ -40,11 +40,53 @@
      *                            being mocked). If `ctor` is specified, the
      *                            property `args` may also be set to specify the
      *                            arguments to pass to that function.
+     * @option [chains] {object}  Optional object containing flags indicating
+     *                            whether methods of the spy instances should
+     *                            be chainable.  The flags are keyed by method
+     *                            name.
+     * @option [results] {object} Optional object containing values that will
+     *                            be returned from methods of the spy instances.
+     *                            The values are keyed by method name.
      */
     function createConstructor (options) {
-        var name = options.name,
-            log = options.log,
-            archetype = options.archetype;
+        return createFunction({
+            name: options.name,
+            log: options.log,
+            result: createObject({
+                archetype: getArchetype(options.archetype),
+                log: options.log,
+                chains: options.chains,
+                results: options.results
+            })
+        });
+    }
+
+    function getArchetype (options) {
+        if (isObject(options.instance)) {
+            return options.instance;
+        }
+
+        if (isFunction(options.ctor)) {
+            if (isArray(options.args)) {
+                return options.ctor.apply({}, options.args);
+            }
+
+            return options.ctor.call({});
+        }
+
+        throw new Error('Invalid archetype');
+    }
+
+    function isObject (thing) {
+        return typeof thing === 'object' && thing !== null;
+    }
+
+    function isFunction (thing) {
+        return typeof thing === 'function';
+    }
+
+    function isArray (thing) {
+        return Object.prototype.toString.call(thing) === '[object Array]';
     }
 
     /**
@@ -102,10 +144,6 @@
 
     function isNotFunction (thing) {
         return isFunction(thing) === false;
-    }
-
-    function isFunction (thing) {
-        return typeof thing === 'function';
     }
 
     /**
