@@ -30,16 +30,16 @@
      * @option log {object}       Object used to store call counts, arguments
      *                            and contexts, on properties `counts[name]`,
      *                            `args[name]` and `these[name]` respecitvely.
-     * @option archetype {object} Optional archetype used to construct the mock
-     *                            instances that will be returned by the spy
-     *                            constructor. It must have either the property
-     *                            `instance`, an object that will be used as the
-     *                            template for mock instances, or the property
-     *                            `ctor`, a function that returns the template
-     *                            (usually this will be the constructor that is
-     *                            being mocked). If `ctor` is specified, the
-     *                            property `args` may also be set to specify the
-     *                            arguments to pass to that function.
+     * @option archetype {object} Archetype used to construct the mock instances
+     *                            that will be returned by the spy constructor.
+     *                            It must have either the property `instance`,
+     *                            an object that will be used as the template
+     *                            for mock instances, or the property `ctor`, a
+     *                            function that returns the template (usually
+     *                            this will be the constructor that is being
+     *                            mocked). If `ctor` is specified, the property
+     *                            `args` may also be set to specify the arguments
+     *                            to pass to that function.
      * @option [chains] {object}  Optional object containing flags indicating
      *                            whether methods of the mock instances should
      *                            be chainable.  The flags are keyed by method
