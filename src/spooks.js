@@ -12,10 +12,10 @@
         fn: createFunction
     };
 
-    if (module && module.exports) {
-        module.exports = functions;
-    } else {
+    if (typeof module === 'undefined' || module === null) {
         window.spooks = functions;
+    } else {
+        module.exports = functions;
     }
 
     /**
