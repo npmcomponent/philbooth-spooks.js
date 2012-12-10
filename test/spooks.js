@@ -160,7 +160,7 @@ suite('require:', function () {
                 name: 'foo',
                 log: {},
                 archetype: {
-                    ctor: function () { return {}; }
+                    ctor: function () {}
                 }
             });
         });
@@ -184,7 +184,7 @@ suite('require:', function () {
                 name: 'foo',
                 log: {},
                 archetype: {
-                    ctor: function () { return 'bar'; }
+                    ctor: {}
                 }
             });
         });
@@ -197,8 +197,8 @@ suite('require:', function () {
                 log: {},
                 archetype: {
                     ctor: function () {
-                        if (arguments.length === 1 && arguments[0] === 'bar') {
-                            return {};
+                        if (arguments.length !== 1 || arguments[0] !== 'bar') {
+                            throw new Error();
                         }
                     },
                     args: [ 'baz' ]
@@ -214,8 +214,8 @@ suite('require:', function () {
                 log: {},
                 archetype: {
                     ctor: function () {
-                        if (arguments.length === 1 && arguments[0] === 'bar') {
-                            return {};
+                        if (arguments.length !== 1 || arguments[0] !== 'bar') {
+                            throw new Error();
                         }
                     },
                     args: [ 'bar' ]
@@ -277,6 +277,46 @@ suite('require:', function () {
                 args: [ 'foo' ]
             }
         })());
+    });
+
+    test('mode function is defined', function () {
+        assert.isFunction(spooks.mode);
+    });
+
+    test('mode with no arguments throws', function () {
+        assert.throws(spooks.mode);
+    });
+
+    test('mode with invalid string throws', function () {
+        assert.throws(function () {
+            spooks.mode('narrow');
+        });
+    });
+
+    test('mode with valid string does not throw', function () {
+        assert.doesNotThrow(function () {
+            spooks.mode('wide');
+        });
+    });
+
+    test('mode with wide returns 1', function () {
+        assert.strictEqual(spooks.mode('wide'), 1);
+    });
+
+    test('mode with deep returns 2', function () {
+        assert.strictEqual(spooks.mode('deep'), 2);
+    });
+
+    test('mode with heavy returns 4', function () {
+        assert.strictEqual(spooks.mode('heavy'), 4);
+    });
+
+    test('mode with wide,deep returns 3', function () {
+        assert.strictEqual(spooks.mode('wide,deep'), 3);
+    });
+
+    test('mode ignores whitespace', function () {
+        assert.strictEqual(spooks.mode(' wide , \t\tdeep\t'), 3);
     });
 
     suite('call fn with name and log:', function () {
@@ -908,11 +948,11 @@ suite('require:', function () {
     });
 
     suite('call ctor with actual constructor [sanity check]:', function () {
-        var log, ctor, instance;
+        var log, Mock, instance;
 
         setup(function () {
             log = {};
-            ctor = spooks.ctor({
+            Mock = spooks.ctor({
                 name: 'Ctor',
                 log: log,
                 archetype: {
@@ -925,17 +965,22 @@ suite('require:', function () {
                     bar: 'baz'
                 }
             });
-            instance = new ctor;
+            instance = new Mock();
 
             function Ctor () {
                 this.foo = function () {};
                 this.bar = function () {};
+                this.baz = 'baz';
+                this.qux = {
+                    foo: function () {},
+                    bar: 'bar'
+                };
                 return this;
             }
         });
 
         teardown(function () {
-            log = ctor = instance = undefined;
+            log = Mock = instance = undefined;
         });
 
         test('instance has method foo', function () {
@@ -944,6 +989,14 @@ suite('require:', function () {
 
         test('instance has method bar', function () {
             assert.isFunction(instance.bar);
+        });
+
+        test('instance does not have property baz', function () {
+            assert.isUndefined(instance.baz);
+        });
+
+        test('instance does not have property qux', function () {
+            assert.isUndefined(instance.qux);
         });
 
         test('instance has two properties', function () {
@@ -975,15 +1028,217 @@ suite('require:', function () {
         });
     });
 
-    test('calling ctor with valid ctor arguments does not throw', function () {
-        assert.doesNotThrow(function () {
-            spooks.ctor({
-                name: 'foo',
+    suite('call ctor with wide mode set:', function () {
+        var Mock, instance;
+
+        setup(function () {
+            Mock = spooks.ctor({
+                name: 'Ctor',
                 log: {},
                 archetype: {
-                    ctor: function () { return {}; }
-                }
+                    ctor: Ctor
+                },
+                mode: spooks.mode('wide')
             });
+            instance = new Mock();
+
+            function Ctor () {
+                this.foo = function () {};
+                this.bar = function () {};
+                this.baz = 'baz';
+                this.qux = {
+                    foo: function () {},
+                    bar: 'bar'
+                };
+                return this;
+            }
+        });
+
+        teardown(function () {
+            Mock = instance = undefined;
+        });
+
+        test('instance has property baz', function () {
+            assert.strictEqual(instance.baz, 'baz');
+        });
+
+        test('instance does not have property qux', function () {
+            assert.isUndefined(instance.qux);
+        });
+    });
+
+    suite('call ctor with deep mode set:', function () {
+        var Mock, instance;
+
+        setup(function () {
+            Mock = spooks.ctor({
+                name: 'Ctor',
+                log: {},
+                archetype: {
+                    ctor: Ctor
+                },
+                mode: spooks.mode('deep')
+            });
+            instance = new Mock();
+
+            function Ctor () {
+                this.foo = function () {};
+                this.bar = function () {};
+                this.baz = 'baz';
+                this.qux = {
+                    foo: function () {},
+                    bar: 'bar'
+                };
+                return this;
+            }
+        });
+
+        teardown(function () {
+            Mock = instance = undefined;
+        });
+
+        test('instance does not have property baz', function () {
+            assert.isUndefined(instance.baz);
+        });
+
+        test('instance has property qux', function () {
+            assert.isObject(instance.qux);
+        });
+
+        test('qux.foo is function', function () {
+            assert.isFunction(instance.qux.foo);
+        });
+
+        test('qux.bar is undefined', function () {
+            assert.isUndefined(instance.qux.bar);
+        });
+    });
+
+    suite('call ctor with wide and deep modes set:', function () {
+        var Mock, instance;
+
+        setup(function () {
+            Mock = spooks.ctor({
+                name: 'Ctor',
+                log: {},
+                archetype: {
+                    ctor: Ctor
+                },
+                mode: spooks.mode('wide,deep')
+            });
+            instance = new Mock();
+
+            function Ctor () {
+                this.foo = function () {};
+                this.bar = function () {};
+                this.baz = 'baz';
+                this.qux = {
+                    foo: function () {},
+                    bar: 'bar'
+                };
+                return this;
+            }
+        });
+
+        teardown(function () {
+            Mock = instance = undefined;
+        });
+
+        test('instance has property baz', function () {
+            assert.strictEqual(instance.baz, 'baz');
+        });
+
+        test('instance has property qux', function () {
+            assert.isObject(instance.qux);
+        });
+
+        test('qux.foo is function', function () {
+            assert.isFunction(instance.qux.foo);
+        });
+
+        test('qux.bar is correct', function () {
+            assert.strictEqual(instance.qux.bar, 'bar');
+        });
+    });
+
+    suite('call ctor with heavy mode set:', function () {
+        var Ctor, instance;
+
+        setup(function () {
+            var Base, Derived;
+
+            Base = function () {};
+            Base.prototype.baz = function () {};
+            Base.prototype.qux = 'qux';
+
+            Derived = function () {};
+            Derived.prototype = new Base();
+            Derived.prototype.foo = function () {};
+            Derived.prototype.bar = function () {};
+
+            Ctor = spooks.ctor({
+                name: 'Ctor',
+                log: {},
+                archetype: {
+                    ctor: Derived
+                },
+                mode: spooks.mode('heavy')
+            });
+
+            instance = new Ctor();
+        });
+
+        teardown(function () {
+            Ctor = instance = undefined;
+        });
+
+        test('instance has method baz', function () {
+            assert.isFunction(instance.baz);
+        });
+
+        test('instance does not have property qux', function () {
+            assert.isUndefined(instance.qux);
+        });
+    });
+
+    suite('call ctor with wide and heavy modes set:', function () {
+        var Ctor, instance;
+
+        setup(function () {
+            Derived.prototype = new Base();
+            Ctor = spooks.ctor({
+                name: 'Ctor',
+                log: {},
+                archetype: {
+                    ctor: Derived
+                },
+                mode: spooks.mode('wide,heavy')
+            });
+            instance = new Ctor();
+
+            function Derived () {
+                this.foo = function () {};
+                this.bar = function () {};
+                return this;
+            }
+
+            function Base () {
+                this.baz = function () {};
+                this.qux = 'qux';
+                return this;
+            }
+        });
+
+        teardown(function () {
+            Ctor = instance = undefined;
+        });
+
+        test('instance has method baz', function () {
+            assert.isFunction(instance.baz);
+        });
+
+        test('instance has property qux', function () {
+            assert.strictEqual(instance.qux, 'qux');
         });
     });
 });

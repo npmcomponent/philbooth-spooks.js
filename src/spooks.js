@@ -7,10 +7,17 @@
 (function () {
     'use strict';
 
-    var functions = {
+    var constants = {
+        wide: 0x1,
+        deep: 0x2,
+        heavy: 0x4
+    },
+
+    functions = {
         ctor: createConstructor,
         obj: createObject,
-        fn: createFunction
+        fn: createFunction,
+        mode: getMode
     };
 
     if (typeof module === 'undefined' || module === null) {
@@ -47,6 +54,10 @@
      * @option [results] {object} Optional object containing values that will
      *                            be returned from methods of the mock instances.
      *                            The values are keyed by method name.
+     * @option [mode] {mode}      Optional mode specifying how the mock instances
+     *                            should be created. For more about modes, see the
+     *                            public function `mode` at the bottom of this
+     *                            module.
      */
     function createConstructor (options) {
         return createFunction({
@@ -56,7 +67,8 @@
                 archetype: getArchetype(options.archetype),
                 log: options.log,
                 chains: options.chains,
-                results: options.results
+                results: options.results,
+                mode: options.mode
             })
         });
     }
@@ -68,10 +80,10 @@
 
         if (isFunction(options.ctor)) {
             if (isArray(options.args)) {
-                return options.ctor.apply({}, options.args);
+                return instantiateWithArguments(options.ctor, options.args);
             }
 
-            return options.ctor.call({});
+            return new options.ctor();
         }
 
         throw new Error('Invalid archetype');
@@ -87,6 +99,15 @@
 
     function isArray (thing) {
         return Object.prototype.toString.call(thing) === '[object Array]';
+    }
+
+    function instantiateWithArguments (constructor, args) {
+        Derived.prototype = constructor.prototype;
+        return new Derived();
+
+        function Derived () {
+            return constructor.apply(this, args);
+        }
     }
 
     /**
@@ -108,13 +129,13 @@
      * @option [results] {object} Optional object containing values that will
      *                            be returned from spy methods. The values
      *                            are keyed by method name.
+     * @option [mode] {mode}      Optional mode specifying how the mock should be
+     *                            created. For more about modes, see the public
+     *                            function `mode`, at the bottom of this module.
      */
     function createObject (options) {
         var archetype = options.archetype,
-            spook = options.spook || {},
-            chains = options.chains || {},
-            results = options.results || {},
-            property;
+            spook = options.spook || {};
 
         if (isNotObject(archetype) && isNotFunction(archetype)) {
             throw new Error('Invalid archetype');
@@ -124,18 +145,61 @@
             throw new Error('Invalid log');
         }
 
-        for (property in archetype) {
-            if (archetype.hasOwnProperty(property) && isFunction(archetype[property])) {
-                spook[property] = createFunction({
-                    name: property,
-                    log: options.log,
-                    chain: chains[property],
-                    result: results[property]
-                });
+        // TODO: Should we also handle mocking arrays? (would just require using processArray at this level)
+
+        processProperties(archetype, spook, {
+            log: options.log,
+            chains: options.chains || {},
+            results: options.results || {},
+            mode: options.mode || 0
+        });
+
+        return spook;
+    }
+
+    function processProperties (source, target, options) {
+        var property;
+
+        for (property in source) {
+            if (shouldProcessProperty(source, property, options.mode)) {
+                target[property] = processProperty(source, property, options);
             }
         }
 
-        return spook;
+        return target;
+    }
+
+    function processProperty (object, name, options) {
+        var property = object[name];
+
+        if (isFunction(property)) {
+            return processProperties(property, createFunction({
+                name: name,
+                log: options.log,
+                chain: options.chains[name],
+                result: options.results[name]
+            }), options);
+        }
+
+        if (isNotObject(property)) {
+            return property;
+        }
+
+        if (isArray(property)) {
+            return processArray(property, options);
+        }
+
+        return processProperties(property, {}, options);
+    }
+
+    function processArray (source, options) {
+        var target = [], i;
+
+        for (i = 0; i < source.length; i += 1) {
+            target.push(processProperty(source, i, options));
+        }
+
+        return target;
     }
 
     function isNotObject (thing) {
@@ -144,6 +208,39 @@
 
     function isNotFunction (thing) {
         return isFunction(thing) === false;
+    }
+
+    function shouldProcessProperty (object, name, mode) {
+        if (object.hasOwnProperty(name) === false && shouldProcessPrototypes(mode) === false) {
+            return false;
+        }
+
+        if (isObject(object[name])) {
+            return shouldProcessObjects(mode);
+        }
+
+        if (isNotFunction(object[name])) {
+            return shouldProcessValues(mode);
+        }
+
+        return true;
+    }
+
+    function shouldProcessPrototypes (mode) {
+        return isModeSet(constants.heavy, mode);
+    }
+
+    function isModeSet (mode, currentModes) {
+        /*jshint bitwise:false */
+        return (mode & currentModes) === mode;
+    }
+
+    function shouldProcessObjects (mode) {
+        return isModeSet(constants.deep, mode);
+    }
+
+    function shouldProcessValues (mode) {
+        return isModeSet(constants.wide, mode);
     }
 
     /**
@@ -215,6 +312,45 @@
         log.counts[name] += 1;
         log.args[name].push(args);
         log.these[name].push(that);
+    }
+
+    /**
+     * Public function `mode`.
+     *
+     * Returns a mode constant that can be used to modify the mocking behaviour of
+     * other exported functions.
+     *
+     * @param modes {string} A comma-separated list of desired modes, combined in any
+     *                       order. Valid modes are 'wide', 'deep' and 'heavy'. The
+     *                       default mode implied when no modes are specified has a
+     *                       constant value of zero and is assumed by every function.
+     *                       It is both literally and conceptually the absence of the
+     *                       other modes. The 'wide' mode indicates that mock objects
+     *                       will be assigned copies of all of their archetype's own
+     *                       non-object properties, not just the functions. The 'deep'
+     *                       mode indicates that mock objects will be given the nested
+     *                       object structure of their archetype. The 'heavy' mode
+     *                       indicates that mock objects will be assigned properties
+     *                       from the archetype's prototype chain, in addition its own
+     *                       properties. All combination of these modes are valid. Any
+     *                       modes not recognised will cause an exception to be thrown.
+     *                       Whitespace is ignored.
+     */
+    function getMode (modes) {
+        /*jshint bitwise:false */
+        var result = 0, keys = modes.split(','), i, mode;
+
+        for (i = 0; i < keys.length; i += 1) {
+            mode = constants[keys[i].trim()];
+
+            if (typeof mode === 'undefined') {
+                throw new Error('Invalid mode');
+            }
+
+            result |= mode;
+        }
+
+        return result;
     }
 }());
 
