@@ -44,7 +44,7 @@ var spooks = require('spooks');
 
 ### Calling the exported functions
 
-Three functions are exported:
+Four functions are exported: `fn`, `obj`, `ctor` and `mode`.
 
 #### spooks.fn (options)
 
@@ -113,9 +113,14 @@ based on the properties of the `options` argument.
 `options.archetype` must be a non-null object
 that will be used as a template
 from which to define the mock object.
-The returned mock will be given spy methods
-matching each of the archetype's _**own**_ methods
-(i.e. excluding those inherited from its prototype chain).
+
+`options.mode` is an optional mode constant,
+as returned by the function `spooks.mode`,
+that indicates precisely which properties from the archetype
+should be mocked.
+See the documentation for `spooks.mode`,
+further down in this document,
+for more information about mocking modes.
 
 `options.log` must be a non-null object
 that will be used to store counts of spy method calls,
@@ -216,6 +221,14 @@ If `ctor` is specified
 the array property `args` may also be set
 to specify any arguments which must be passed to that function.
 
+`options.mode` is an optional mode constant,
+as returned by the function `spooks.mode`,
+that indicates precisely which properties from the archetype
+should be mocked.
+See the documentation for `spooks.mode`,
+further down in this document,
+for more information about mocking modes.
+
 `options.chains` is an optional object
 containing boolean flags that indicate whether
 spy methods of the mock instances should support chaining.
@@ -253,6 +266,43 @@ assert.strictEqual(log.counts.isDone, 1);
 // Reinstate the original object.
 Task = originalTask;
 ```
+
+#### spooks.mode (modes)
+
+Returns a mode constant
+that can be used to modify the mocking behaviour of the other functions.
+
+`modes` must be a string
+containing a comma-separated list of desired modes,
+combined in any order.
+Valid modes are 'wide', 'deep' and 'heavy'.
+Whitespace is ignored.
+
+The deault mode,
+assumed by every function in the absence of these constants,
+is to mock only the archetype's own function properties.
+That is to say,
+any properties of the archetype
+which are not functions
+or are inherited from the prototype chain
+will not be mocked.
+
+`wide` indicates that
+mock objects will be assigned copies
+of the archetype's value properties
+(strings, numbers, booleans)
+in addition to its functions.
+
+`deep` indicates that
+mock objects will be given a deep-cloned copy
+of any object properties on the archetype.
+
+`heavy` indicates that
+mock objects will be given copies
+of properties from the archetype's prototype chain.
+
+All combination of these modes are valid.
+Any modes not recognised will cause an exception to be thrown.
 
 ## Development
 
