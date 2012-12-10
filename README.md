@@ -44,7 +44,8 @@ var spooks = require('spooks');
 
 ### Calling the exported functions
 
-Four functions are exported: `fn`, `obj`, `ctor` and `mode`.
+Four functions are exported:
+`spooks.fn`, `spooks.obj`, `spooks.ctor` and `spooks.mode`.
 
 #### spooks.fn (options)
 
