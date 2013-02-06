@@ -202,7 +202,7 @@ the actual name of the constructor,
 although it doesn't have to
 (for example,
 you may need to avoid name clashes
-with other properties on the log object).
+with other properties on the `log` object).
 
 `options.log` must be a non-null object
 that will be used to store the count of calls
