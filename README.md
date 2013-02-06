@@ -1,10 +1,10 @@
 # spooks.js
 
+[![Build status][ci-image]][ci-status]
+
 A small and simple library
 for creating unit test spies and mock objects
 in JavaScript.
-
-[![Build status][ci-image]][ci-status]
 
 ## Installation
 
@@ -23,8 +23,8 @@ git clone git@github.com:philbooth/spooks.js.git
 Or use one of the growing number of package managers, such as
 [Jam][jam],
 [Bower][bower]
-(the package name for both is 'spooks')
-or [Component][component] ('philbooth/spooks.js').
+(the package name for both is `spooks`)
+or [Component][component] (`philbooth/spooks.js`).
 
 ## Usage
 
@@ -53,34 +53,37 @@ Returns a spy function,
 based on the properties of the `options` argument.
 
 `options.name` must be a string identifying the function,
-to be used when fetching the count,
-arguments
-or contexts
-of calls to the returned spy function.
+to be used when fetching the
+count of,
+arguments to
+or context for
+calls to the returned spy function.
 You probably want this to match
 the actual name of the function,
 although it doesn't have to
 (for example,
 you may need to avoid name clashes
-with other properties on the log object).
+with other properties on the `log` object).
 
 `options.log` must be a non-null object
-that will be used to store the count of calls made to the spy,
+that will be used to store
+the count of calls made to the spy,
 any arguments passed to it
-and the `this` context for each call,
-on the `counts[name]`,
+and the `this` context for each call.
+These are stored on the
+`counts[name]`,
 `args[name]`
 and `these[name]`
-properties respectively.
+properties of `log` respectively.
 
 `options.chain` is an optional boolean
-that can be used to indicate that
+which can be used to indicate that
 the returned spy function should support chaining
 (i.e. return it's own `this` when invoked).
 
 `options.result` is an optional result
-that will be returned by the returned spy function
-(ignored if `chain` is `true`).
+that will be returned by the spy function if specified
+(it is ignored if `chain` is `true`).
 
 e.g. to mock the `setTimeout` function:
 
@@ -113,7 +116,7 @@ based on the properties of the `options` argument.
 
 `options.archetype` must be a non-null object
 that will be used as a template
-from which to define the mock object.
+on which to base the mock object.
 
 `options.mode` is an optional mode constant,
 as returned by the function `spooks.mode`,
@@ -130,8 +133,8 @@ and the `this` context for each call,
 on the `counts`, `args` and `these` properties respectively.
 
 `options.spook` is an optional object
-that can be used as the base mock object
-to augment with spy methods.
+that can be used as the base mock,
+to be augmented with spy methods.
 If it is not specified,
 a fresh mock will be returned instead.
 
@@ -189,25 +192,28 @@ that contain spy methods
 based on the properties of the `options` argument.
 
 `options.name` must be a string identifying the constructor,
-to be used when fetching the count,
-arguments
-or contexts
-of calls to the returned spy function.
+to be used when fetching the
+count of,
+arguments to
+or context for
+calls to the returned spy constructor.
 You probably want this to match
-the actual name of the function,
+the actual name of the constructor,
 although it doesn't have to
 (for example,
 you may need to avoid name clashes
 with other properties on the log object).
 
 `options.log` must be a non-null object
-that will be used to store the count of calls made to the constructor,
-any arguments passed to it
-and the `this` context for each call,
-on the `counts[name]`,
+that will be used to store the count of calls
+made to the constructor and the methods on objects it constructs,
+any arguments passed in those calls
+and the `this` context for them.
+These are stored on the
+`counts[name]`,
 `args[name]`
 and `these[name]`
-properties respectively.
+properties of `log` respectively.
 
 `options.archetype` must be an object
 containing properties that define
@@ -218,7 +224,7 @@ an object that will be used as the template for mock instances,
 or the property `ctor`,
 a function that returns the template
 (usually this would be the original constructor that is being mocked).
-If `ctor` is specified
+If `ctor` is specified,
 the array property `args` may also be set
 to specify any arguments which must be passed to that function.
 
@@ -276,16 +282,16 @@ that can be used to modify the mocking behaviour of the other functions.
 `modes` must be a string
 containing a comma-separated list of desired modes,
 combined in any order.
-Valid modes are 'wide', 'deep' and 'heavy'.
+Valid modes are `'wide'`, `'deep'` and `'heavy'`.
 Whitespace is ignored.
 
-The deault mode,
+The default mode,
 assumed by every function in the absence of these constants,
 is to mock only the archetype's own function properties.
 That is to say,
 any properties of the archetype
 which are not functions
-or are inherited from the prototype chain
+or are inherited from the archetype's prototype chain
 will not be mocked.
 
 `wide` indicates that
