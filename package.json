@@ -1,12 +1,11 @@
 {
     "name": "spooks",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "author": "Phil Booth <pmbooth@gmail.com>",
     "description": "A small and simple library for creating unit test spies and mock objects.",
-    "contributors": {
-        "name": "Phil Booth",
-        "email": "pmbooth@gmail.com"
-    },
+    "contributors": [
+        { "name": "Phil Booth", "email": "pmbooth@gmail.com" }
+    ],
     "main": "./src/spooks.js",
     "repository": {
         "type": "git",
