@@ -337,7 +337,6 @@ or `jake jstest`.
 [ci-image]: https://secure.travis-ci.org/philbooth/spooks.js.png?branch=master
 [ci-status]: http://travis-ci.org/#!/philbooth/spooks.js
 [jam]: http://jamjs.org/
-[ender]: https://github.com/ender-js/Ender
 [bower]: https://github.com/twitter/bower
 [component]: https://github.com/component/component
 [node]: http://nodejs.org/
