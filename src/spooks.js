@@ -2,9 +2,9 @@
  * This module exports functions for creating unit test spies and mock objects.
  */
 
-/*globals module, window */
+/*globals define, module */
 
-(function () {
+(function (globals) {
     'use strict';
 
     var constants = {
@@ -20,11 +20,7 @@
         mode: getMode
     };
 
-    if (typeof module === 'undefined' || module === null) {
-        window.spooks = functions;
-    } else {
-        module.exports = functions;
-    }
+    exportFunctions();
 
     /**
      * Public function `ctor`.
@@ -352,5 +348,17 @@
 
         return result;
     }
-}());
+
+    function exportFunctions () {
+      if (typeof define === 'function' && define.amd) {
+          define(function () {
+              return functions;
+          });
+      } else if (typeof module === 'object' || module !== null) {
+          module.exports = functions;
+      } else {
+          globals.spooks = functions;
+      }
+    }
+}(this));
 
