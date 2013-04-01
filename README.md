@@ -315,7 +315,7 @@ Any modes not recognised will cause an exception to be thrown.
 ### Dependencies
 
 The build environment relies on
-[Node.js][node],
+Node.js,
 [NPM],
 [Jake],
 [JSHint],
