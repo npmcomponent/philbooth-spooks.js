@@ -8,39 +8,38 @@ in JavaScript.
 
 ## Installation
 
-### Node.js
+### Via NPM
 
 ```
 npm install spooks
 ```
 
-### Browser
+### Via Jam
+
+```
+jam install spooks
+```
+
+### Via Git
 
 ```
 git clone git@github.com:philbooth/spooks.js.git
 ```
 
-Or use one of the growing number of package managers, such as
-[Jam][jam],
-[Bower][bower]
-(the package name for both is `spooks`)
-or [Component][component] (`philbooth/spooks.js`).
-
 ## Usage
 
 ### Loading the library
 
-#### Node.js
-
-```
-var spooks = require('spooks');
-```
-
-#### Browser
-
-```
-<script type="text/javascript" src="spooks.js/src/spooks.min.js"></script>
-```
+Both
+CommonJS
+(e.g. if you're running on [Node.js][node])
+and AMD
+(e.g. if you're running in the browser with [Require.js][require])
+loading styles are supported.
+If neither system is detected,
+the library defaults to
+exporting it's interface globally
+as `spooks`.
 
 ### Calling the exported functions
 
@@ -336,10 +335,8 @@ or `jake jstest`.
 
 [ci-image]: https://secure.travis-ci.org/philbooth/spooks.js.png?branch=master
 [ci-status]: http://travis-ci.org/#!/philbooth/spooks.js
-[jam]: http://jamjs.org/
-[bower]: https://github.com/twitter/bower
-[component]: https://github.com/component/component
 [node]: http://nodejs.org/
+[require]: http://requirejs.org/
 [npm]: https://npmjs.org/
 [jake]: https://github.com/mde/jake
 [jshint]: https://github.com/jshint/node-jshint
