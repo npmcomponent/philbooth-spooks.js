@@ -332,6 +332,8 @@ as listed in `package.json`.
 The unit tests are in `test/spooks.js`.
 You can run them with the command `npm test`
 or `jake test`.
+To run the tests inside a web browser,
+open `test/spooks.html`.
 
 [ci-image]: https://secure.travis-ci.org/philbooth/spooks.js.png?branch=master
 [ci-status]: http://travis-ci.org/#!/philbooth/spooks.js
