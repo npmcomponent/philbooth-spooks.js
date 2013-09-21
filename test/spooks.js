@@ -4,17 +4,13 @@ var assert = require('chai').assert,
     module = '../src/spooks';
 
 suite('no setup:', function () {
-    console.log(1);
     test('require does not throw', function () {
-        console.log(2);
         assert.doesNotThrow(function () {
-            console.log(3);
             require(module);
         });
     });
 
     test('require returns an object', function () {
-        console.log(4);
         assert.isObject(require(module));
     });
 });
