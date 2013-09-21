@@ -6,6 +6,10 @@ A small and simple library
 for creating unit test spies and mock objects
 in JavaScript.
 
+## License
+
+[MIT][license]
+
 ## Installation
 
 ### Via NPM
@@ -84,6 +88,10 @@ the returned spy function should support chaining
 that will be returned by the spy function if specified
 (it is ignored if `chain` is `true`).
 
+`options.callback` is an optional funcion
+that will called when the spy function is invoked.
+This is especially useful when testing asynchronous code.
+
 e.g. to mock the `setTimeout` function:
 
 ```
@@ -146,6 +154,11 @@ The flags are keyed by method name.
 containing values that will be returned
 from spy methods.
 The values are keyed by method name.
+
+`options.callbacks` is an optional object
+containing functions that will be called
+when the spy methods are invoked.
+This is especially useful when testing asynchronous code.
 
 e.g. to mock jQuery:
 
@@ -245,6 +258,11 @@ containing values that will be returned
 from spy methods of the mock instances.
 The values are keyed by method name.
 
+`options.callbacks` is an optional object
+containing functions that will be called
+when the spy methods of the mock instances are invoked.
+This is especially useful when testing asynchronous code.
+
 e.g. to mock `Task` instances from your model layer:
 
 ```
@@ -337,6 +355,7 @@ open `test/spooks.html`.
 
 [ci-image]: https://secure.travis-ci.org/philbooth/spooks.js.png?branch=master
 [ci-status]: http://travis-ci.org/#!/philbooth/spooks.js
+[license]: https://github.com/philbooth/spooks.js/blob/master/COPYING
 [node]: http://nodejs.org/
 [require]: http://requirejs.org/
 [npm]: https://npmjs.org/
