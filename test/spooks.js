@@ -714,6 +714,36 @@ suite('require:', function () {
         });
     });
 
+    suite('call fn with callback:', function () {
+        var log, callback, fn;
+
+        setup(function () {
+            log = {};
+            callback = spooks.fn({
+                name: 'callback',
+                log: log
+            });
+            fn = spooks.fn({
+                name: 'foo',
+                log: log,
+                callback: callback
+            });
+            fn();
+        });
+
+        teardown(function () {
+            log = callback = fn = undefined;
+        });
+
+        test('log.counts.callback is one', function () {
+            assert.strictEqual(log.counts.callback, 1);
+        });
+
+        test('log.args.callback has zero length', function () {
+            assert.lengthOf(log.args.callback[0], 0);
+        });
+    });
+
     suite('call obj with archetype, log and results:', function () {
         var log, object;
 
@@ -948,6 +978,73 @@ suite('require:', function () {
 
         test('object.bar returns object', function () {
             assert.strictEqual(object.bar(), object);
+        });
+    });
+
+    suite('call obj with callbacks:', function () {
+        var log, callbackFoo, callbackBar, object;
+
+        setup(function () {
+            log = {};
+            callbackFoo = spooks.fn({
+                name: 'callbackFoo',
+                log: log
+            });
+            callbackBar = spooks.fn({
+                name: 'callbackBar',
+                log: log
+            });
+            object = spooks.obj({
+                archetype: {
+                    foo: function () {},
+                    bar: function () {}
+                },
+                log: log,
+                callbacks: {
+                    foo: callbackFoo,
+                    bar: callbackBar
+                }
+            });
+        });
+
+        teardown(function () {
+            log = callbackFoo = callbackBar = object = undefined;
+        });
+
+        test('log.counts.callbackFoo is zero', function () {
+            assert.strictEqual(log.counts.callbackFoo, 0);
+        });
+
+        test('log.counts.callbackBar is zero', function () {
+            assert.strictEqual(log.counts.callbackBar, 0);
+        });
+
+        suite('call object.foo:', function () {
+            setup(function () {
+                object.foo();
+            });
+
+            test('log.counts.callbackFoo is one', function () {
+                assert.strictEqual(log.counts.callbackFoo, 1);
+            });
+
+            test('log.args.callbackFoo has zero length', function () {
+                assert.lengthOf(log.args.callbackFoo[0], 0);
+            });
+        });
+
+        suite('call object.bar:', function () {
+            setup(function () {
+                object.bar();
+            });
+
+            test('log.counts.callbackBar is one', function () {
+                assert.strictEqual(log.counts.callbackBar, 1);
+            });
+
+            test('log.args.callbackBar has zero length', function () {
+                assert.lengthOf(log.args.callbackBar[0], 0);
+            });
         });
     });
 
@@ -1243,6 +1340,80 @@ suite('require:', function () {
 
         test('instance has property qux', function () {
             assert.strictEqual(instance.qux, 'qux');
+        });
+    });
+
+    suite('call ctor with callbacks:', function () {
+        var log, callbackFoo, callbackBar, Mock, instance;
+
+        setup(function () {
+            log = {};
+            callbackFoo = spooks.fn({
+                name: 'callbackFoo',
+                log: log
+            });
+            callbackBar = spooks.fn({
+                name: 'callbackBar',
+                log: log
+            });
+            Mock = spooks.ctor({
+                name: 'Ctor',
+                log: log,
+                archetype: {
+                    ctor: Ctor
+                },
+                callbacks: {
+                    foo: callbackFoo,
+                    bar: callbackBar
+                }
+            });
+            instance = new Mock();
+
+            function Ctor () {
+                this.foo = function () {};
+                this.bar = function () {};
+                return this;
+            }
+        });
+
+        teardown(function () {
+            log = callbackFoo = callbackBar = Mock = instance = undefined;
+        });
+
+        test('log.counts.callbackFoo is zero', function () {
+            assert.strictEqual(log.counts.callbackFoo, 0);
+        });
+
+        test('log.counts.callbackBar is zero', function () {
+            assert.strictEqual(log.counts.callbackBar, 0);
+        });
+
+        suite('call instance.foo:', function () {
+            setup(function () {
+                instance.foo();
+            });
+
+            test('log.counts.callbackFoo is one', function () {
+                assert.strictEqual(log.counts.callbackFoo, 1);
+            });
+
+            test('log.args.callbackFoo has zero length', function () {
+                assert.lengthOf(log.args.callbackFoo[0], 0);
+            });
+        });
+
+        suite('call instance.bar:', function () {
+            setup(function () {
+                instance.bar();
+            });
+
+            test('log.counts.callbackBar is one', function () {
+                assert.strictEqual(log.counts.callbackBar, 1);
+            });
+
+            test('log.args.callbackBar has zero length', function () {
+                assert.lengthOf(log.args.callbackBar[0], 0);
+            });
         });
     });
 });

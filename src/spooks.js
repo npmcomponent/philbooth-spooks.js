@@ -28,32 +28,35 @@
      * Returns a unit test spy constructor, which returns mock instances that are
      * themselves unit test spies.
      *
-     * @option name {object}      The name of the constructor being mocked, used
-     *                            as a key into the `log` object.
-     * @option log {object}       Object used to store call counts, arguments
-     *                            and contexts, on properties `counts[name]`,
-     *                            `args[name]` and `these[name]` respecitvely.
-     * @option archetype {object} Archetype used to construct the mock instances
-     *                            that will be returned by the spy constructor.
-     *                            It must have either the property `instance`,
-     *                            an object that will be used as the template
-     *                            for mock instances, or the property `ctor`, a
-     *                            function that returns the template (usually
-     *                            this will be the constructor that is being
-     *                            mocked). If `ctor` is specified, the property
-     *                            `args` may also be set to specify the arguments
-     *                            to pass to that function.
-     * @option [chains] {object}  Optional object containing flags indicating
-     *                            whether methods of the mock instances should
-     *                            be chainable.  The flags are keyed by method
-     *                            name.
-     * @option [results] {object} Optional object containing values that will
-     *                            be returned from methods of the mock instances.
-     *                            The values are keyed by method name.
-     * @option [mode] {mode}      Optional mode specifying how the mock instances
-     *                            should be created. For more about modes, see the
-     *                            public function `mode` at the bottom of this
-     *                            module.
+     * @option name {object}           The name of the constructor being mocked, used
+     *                                 as a key into the `log` object.
+     * @option log {object}            Object used to store call counts, arguments
+     *                                 and contexts, on properties `counts[name]`,
+     *                                 `args[name]` and `these[name]` respecitvely.
+     * @option archetype {object}      Archetype used to construct the mock instances
+     *                                 that will be returned by the spy constructor.
+     *                                 It must have either the property `instance`,
+     *                                 an object that will be used as the template
+     *                                 for mock instances, or the property `ctor`, a
+     *                                 function that returns the template (usually
+     *                                 this will be the constructor that is being
+     *                                 mocked). If `ctor` is specified, the property
+     *                                 `args` may also be set to specify the arguments
+     *                                 to pass to that function.
+     * @option [chains] {object}       Optional object containing flags indicating
+     *                                 whether methods of the mock instances should
+     *                                 be chainable. The flags are keyed by method
+     *                                 name.
+     * @option [results] {object}      Optional object containing values that will
+     *                                 be returned from methods of the mock instances.
+     *                                 The values are keyed by method name.
+     * @options [callbacks] {function} Optional object containing functions to be
+     *                                 called back methods of the mock instances are
+     *                                 invoked. Useful when testing asynchronous code.
+     * @option [mode] {mode}           Optional mode specifying how the mock instances
+     *                                 should be created. For more about modes, see the
+     *                                 public function `mode` at the bottom of this
+     *                                 module.
      */
     function createConstructor (options) {
         return createFunction({
@@ -64,6 +67,7 @@
                 log: options.log,
                 chains: options.chains,
                 results: options.results,
+                callbacks: options.callbacks,
                 mode: options.mode
             })
         });
@@ -111,23 +115,26 @@
      *
      * Returns a mock object that contains unit test spy methods.
      *
-     * @option archetype {object} Template object. The returned mock will have
-     *                            methods matching the archetype's methods.
-     * @option log {object}       Object used to store spy method call counts,
-     *                            arguments and contexts, on the properties
-     *                            `counts`, `args` and `these` respectively.
-     * @option [spook] {object}   Optional base object to add spy methods to.
-     *                            If not specified, a new clean object will
-     *                            be created instead.
-     * @option [chains] {object}  Optional object containing flags indicating
-     *                            whether spy methods shoulds be chainable.
-     *                            The flags are keyed by method name.
-     * @option [results] {object} Optional object containing values that will
-     *                            be returned from spy methods. The values
-     *                            are keyed by method name.
-     * @option [mode] {mode}      Optional mode specifying how the mock should be
-     *                            created. For more about modes, see the public
-     *                            function `mode`, at the bottom of this module.
+     * @option archetype {object}      Template object. The returned mock will have
+     *                                 methods matching the archetype's methods.
+     * @option log {object}            Object used to store spy method call counts,
+     *                                 arguments and contexts, on the properties
+     *                                 `counts`, `args` and `these` respectively.
+     * @option [spook] {object}        Optional base object to add spy methods to.
+     *                                 If not specified, a new clean object will
+     *                                 be created instead.
+     * @option [chains] {object}       Optional object containing flags indicating
+     *                                 whether spy methods shoulds be chainable.
+     *                                 The flags are keyed by method name.
+     * @option [results] {object}      Optional object containing values that will
+     *                                 be returned from spy methods. The values
+     *                                 are keyed by method name.
+     * @options [callbacks] {function} Optional object containing functions to be
+     *                                 called back when the spy methods are invoked.
+     *                                 Useful when testing asynchronous code.
+     * @option [mode] {mode}           Optional mode specifying how the mock should be
+     *                                 created. For more about modes, see the public
+     *                                 function `mode`, at the bottom of this module.
      */
     function createObject (options) {
         var archetype = options.archetype,
@@ -147,6 +154,7 @@
             log: options.log,
             chains: options.chains || {},
             results: options.results || {},
+            callbacks: options.callbacks || {},
             mode: options.mode || 0
         });
 
@@ -173,7 +181,8 @@
                 name: name,
                 log: options.log,
                 chain: options.chains[name],
-                result: options.results[name]
+                result: options.results[name],
+                callback: options.callbacks[name]
             }), options);
         }
 
@@ -244,25 +253,33 @@
      *
      * Returns a unit test spy function.
      *
-     * @option name {object}     The name of the function being mocked, used
-     *                           as a key into the `log` object.
-     * @option log {object}      Object used to store call counts, arguments
-     *                           and contexts, on properties `counts[name]`,
-     *                           `args[name]` and `these[name]` respecitvely.
-     * @option [chain] {boolean} Optional flag specifying whether the spy
-     *                           function supports chaining (i.e. it returns
-     *                           its own `this`). Defaults to `false`.
-     * @option [result] {var}    Optional result that will be returned from
-     *                           the spy function. Defaults to `undefined`.
+     * @option name {object}          The name of the function being mocked, used
+     *                                as a key into the `log` object.
+     * @option log {object}           Object used to store call counts, arguments
+     *                                and contexts, on properties `counts[name]`,
+     *                                `args[name]` and `these[name]` respecitvely.
+     * @option [chain] {boolean}      Optional flag specifying whether the spy
+     *                                function supports chaining (i.e. it returns
+     *                                its own `this`). Defaults to `false`.
+     * @option [result] {var}         Optional result that will be returned from
+     *                                the spy function. Defaults to `undefined`.
+     * @options [callback] {function} Optional function to be called back when the
+     *                                spy function is invoked. Useful when testing
+     *                                asynchronous code.
      */
     function createFunction (options) {
         var name = options.name,
             chain = options.chain,
             log = options.log,
-            result = options.result;
+            result = options.result,
+            callback = options.callback;
 
         if (typeof name !== 'string') {
             throw new Error('Invalid function name');
+        }
+
+        if (callback && typeof callback !== 'function') {
+            throw new Error('Invalid callback function');
         }
 
         initialiseLogProperties(log, name, {
@@ -273,6 +290,10 @@
 
         return function () {
             logFunctionCall(name, log, arguments, this);
+
+            if (callback) {
+                callback();
+            }
 
             if (chain === true) {
                 return this;
