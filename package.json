@@ -1,41 +1,20 @@
 {
-    "name": "spooks",
-    "version": "0.5.5",
-    "author": "Phil Booth <pmbooth@gmail.com>",
-    "description": "A small and simple library for creating unit test spies and mock objects.",
-    "contributors": [
-        { "name": "Phil Booth", "email": "pmbooth@gmail.com" }
-    ],
-    "main": "./src/spooks.js",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/philbooth/spooks.js"
-    },
-    "keywords": [
-        "unit",
-        "test",
-        "assert",
-        "spy",
-        "spies",
-        "double",
-        "mock",
-        "fake",
-        "dummy",
-        "stub"
-    ],
-    "jam": {
-        "main": "src/spooks.js"
-    },
-    "devDependencies": {
-        "jake": "0.5.x",
-        "jshint": "0.9.x",
-        "mocha": "1.8.x",
-        "chai": "1.4.x",
-        "uglify-js": "2.2.x"
-    },
-    "license": "MIT",
-    "scripts": {
-        "test": "jake test"
-    }
+  "name": "philbooth-spooks.js",
+  "description": "A small and simple library for creating unit test spies and mock objects.",
+  "version": "0.5.5",
+  "keywords": [
+    "unit",
+    "test",
+    "assert",
+    "spy",
+    "spies",
+    "double",
+    "mock",
+    "fake",
+    "dummy",
+    "stub"
+  ],
+  "main": "src/spooks.min.js",
+  "dependencies": {},
+  "license": "MIT"
 }
-
